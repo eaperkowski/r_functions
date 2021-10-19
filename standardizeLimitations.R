@@ -13,14 +13,10 @@
 #                      Temperature must be in degrees Celsius.
 # Returns:
 #    - List of length two with Vcmax or Jmax estimate standardized to 25 degC
-standardizeLimitations <- function(df,
-                                   sample.col = "", 
-                                   Vcmax_est, 
-                                   Jmax_est, 
+standardizeLimitations <- function(estimate,
+                                   estimate.type = c("Vcmax", "Jmax"),
                                    tLeaf, 
                                    tGrow) {
-  df <- data.frame(df)
-  df$id <- df[, sample.col]
 
   ## delta S constants as per Kattge & Knorr 
   a_vcmax <- 668.39
@@ -41,20 +37,27 @@ standardizeLimitations <- function(df,
   Ha_jmax <- 49884
   Hd <- 200000
   R <- 8.314
+  
+  if (estimate.type == "Vcmax") {
   multOneVcmax <- exp((Ha_vcmax * (tK - tO)) / (R * tK * tO))
   multTwoVcmax <- (1 + exp((tO * S_vcmax - Hd)/(R * tO))) / (1 + exp((tK * S_vcmax - Hd)/(R * tK)))
   
   multipliersVcmax <- multOneVcmax * multTwoVcmax
-  VcmaxStandard <- Vcmax_est / multipliersVcmax
+  VcmaxStandard <- estimate / multipliersVcmax
+  
+  return(VcmaxStandard)
+  
+  }
+  
+  if(estimate.type == "Jmax") {
   
   multOneJmax <- exp((Ha_jmax * (tK - tO)) / (R * tK * tO))
   multTwoJmax <- (1 + exp((tO * S_jmax - Hd)/(R * tO))) / (1 + exp((tK * S_jmax - Hd)/(R * tK)))
   
   multipliersJmax <- multOneJmax * multTwoJmax
-  JmaxStandard <- Jmax_est / multipliersJmax
+  JmaxStandard <- estimate / multipliersJmax
   
-  df$vcmax.stand <- VcmaxStandard
-  df$jmax.stand <- JmaxStandard
+  return(JmaxStandard)
   
-  return(df)
+  }
 }
