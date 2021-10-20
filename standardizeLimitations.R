@@ -14,7 +14,7 @@
 # Returns:
 #    - List of length two with Vcmax or Jmax estimate standardized to 25 degC
 standardizeLimitations <- function(estimate,
-                                   estimate.type = c("Vcmax", "Jmax"),
+                                   estimate.type = c("Vcmax", "Jmax", "Rd"),
                                    tLeaf, 
                                    tGrow) {
 
@@ -59,5 +59,20 @@ standardizeLimitations <- function(estimate,
   
   return(JmaxStandard)
   
+  }
+  
+  if(estimate.type == "Rd") {
+    a_rd = -1.6821 #Parameters for C3 herb from Tbl. S3 in Heskel et al. (2016)
+    b_rd = 0.1272 #Parameters for C3 herb from Tbl. S3 in Heskel et al. (2016)
+    c_rd = -0.00103 #Parameters for C3 herb from Tbl. S3 in Heskel et al. (2016)
+    
+    Rtref = exp()
+    
+    log(estimate) = a_rd + b_rd*Tleaf + c_brd*Tleaf
+    
+    ## Stopped here- pick up on flight tomorrow
+    
+    return(RdStandard)
+    
   }
 }
