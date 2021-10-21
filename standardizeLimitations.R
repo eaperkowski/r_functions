@@ -62,17 +62,18 @@ standardizeLimitations <- function(estimate,
   }
   
   if(estimate.type == "Rd") {
-    a_rd = -1.6821 #Parameters for C3 herb from Tbl. S3 in Heskel et al. (2016)
-    b_rd = 0.1272 #Parameters for C3 herb from Tbl. S3 in Heskel et al. (2016)
-    c_rd = -0.00103 #Parameters for C3 herb from Tbl. S3 in Heskel et al. (2016)
     
-    Rtref = exp()
+    ## Log polynomial parameters from Heskel et al. (2016) for C3 herb. species
+    a_rd = -1.6821
+    b_rd = 0.1272
+    c_rd = -0.00103
     
-    log(estimate) = a_rd + b_rd*Tleaf + c_brd*Tleaf
+    t = 25 # temperature to standardize to
+
+    ## Equation from Heskel et al. (2016) and O'Sullivan et al. (2013)
+    rd.25 = estimate * exp(b_rd*(t - tLeaf) + c_rd*((t)^2 - (tLeaf)^2))
     
-    ## Stopped here- pick up on flight tomorrow
-    
-    return(RdStandard)
+    return(Rd25)
     
   }
 }
