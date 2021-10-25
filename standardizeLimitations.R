@@ -73,7 +73,7 @@ standardizeLimitations <- function(estimate,
     ## Equation from Heskel et al. (2016) and O'Sullivan et al. (2013)
     rd.25 = estimate * exp(b_rd*(t - tLeaf) + c_rd*((t)^2 - (tLeaf)^2))
     
-    return(Rd25)
+    return(rd.25)
     
   }
 }
