@@ -1,8 +1,8 @@
-bootstrapDiffMeans <- function(df, 
-                               group = "treatment", 
-                               var = "value", 
-                               tail ="one", 
-                               doPlot = TRUE) {
+bootstrap_diff_means <- function(df, 
+                                 group = "treatment", 
+                                 var = "value", 
+                                 tail ="one", 
+                                 doPlot = TRUE) {
   df$var <- df[, var]
   df$group <- df[, group]
   df$group <- factor(df$group)
@@ -23,6 +23,7 @@ bootstrapDiffMeans <- function(df,
     null.distribution[i] <- new.difference
   }
   ci.95 <- quantile(null.distribution, probs=c(0.025, 0.975))
+  
   # ------- P-value portion -------------
   cumprob <- ecdf(null.distribution)
 
@@ -38,7 +39,8 @@ bootstrapDiffMeans <- function(df,
     p.value.other.tail <- 1-cumprob(quantile(abs(difference))[1])
     p.value <- p.value.one.tail + p.value.other.tail
   }
-  if(doPlot) {
+  
+  if(doPlot = TRUE) {
     plot(density(null.distribution),
          main = "Density plot of the difference between two groups")
     polygon(density(null.distribution), col="gray")
@@ -47,6 +49,7 @@ bootstrapDiffMeans <- function(df,
       abline(v = - difference, col = "red", lty = "dashed")
     }
   }
+  
   return(data.frame(mean.difference = difference,
                     lower.ci = ci.95[1],
                     upper.ci = ci.95[2],

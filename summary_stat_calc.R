@@ -1,4 +1,4 @@
-# summary_calc(data, n):
+# summary_stat_calc(data, n):
 # Provides mean, standard deviation, standard error, and confidence intervals
 # using a row of data and the number of data observations
 
@@ -9,7 +9,7 @@
 # Returns:
 #    - Data frame with mean, standard deviation, standard error, lower CI, and 
 #      upper CI. Values are converted to class(numeric)
-summary_calc <- function(data, n) {
+summary_stat_calc <- function(data, n) {
   
   mean <- mean(data, na.rm = TRUE)
   stdev <- sd(data, na.rm = TRUE)

@@ -1,4 +1,4 @@
-# tempStandardize (estimate, estimate.type, standard.to, tLeaf, tGrow):
+# temp_standardize (estimate, estimate.type, standard.to, tLeaf, tGrow):
 # Standardizes Vcmax, Jmax, and Rd estimates to single temperature. Vcmax and
 # Jmax are temperature standardized using a modified Arrhenius function as 
 # explained in Kattge & Knorr (2007), while Rd is temperature standardized using
@@ -29,12 +29,10 @@
 # Returns:
 # Vector of each Vcmax, Jmax, or Rd estimate standardized to the designated
 # temperature
-tempStandardize <- function(estimate,
+temp_standardize <- function(estimate,
                             estimate.type = c("Vcmax", "Jmax", "Rd"),
                             standard.to,
-                            pft = c("BlDcTmp", "BlDcTrp", "BlEvTmp",
-                                    "BlEvTrp", "C3H", "NlEv", "SEv", 
-                                    "GM"),
+                            pft,
                             tLeaf,
                             tGrow) {
 
@@ -82,55 +80,56 @@ tempStandardize <- function(estimate,
   }
   
   if(estimate.type == "Rd") {
+    
     if(pft == "BlDcTmp") {
       a_rd = -2.2264
       b_rd = 0.0993
       c_rd = -0.0005
     }
-    if(pft == "BlDcTrp") {
+    else if(pft == "BlDcTrp") {
       a_rd = -2.727
       b_rd = 0.1125
       c_rd = 0.00058
     }
     
-    if(pft == "BlEvTmp") {
+    else if(pft == "BlEvTmp") {
       a_rd = -1.8106
       b_rd = 0.0896
       c_rd = -0.00021
     }
     
-    if(pft == "BlEvTrp") {
+    else if(pft == "BlEvTrp") {
       a_rd = -2.6105
       b_rd = 0.1022
       c_rd = -0.00052
     }
     
-    if(pft == "C3H") {
+    else if(pft == "C3H") {
       a_rd = -1.7507
       b_rd = 0.1271
       c_rd = -0.00110
     }
     
-    if(pft == "NlEv") {
+    else if(pft == "NlEv") {
       a_rd = -2.0464
       b_rd = 0.1125
       c_rd = -0.00063
     }
     
-    if(pft == "SEv") {
+    else if(pft == "SEv") {
       a_rd = -1.815
       b_rd = 0.0971
       c_rd = -0.00047
     }
     
-    if(pft == "GM") {
+    else if(pft == "GM") {
       a_rd = -2.2276
       b_rd = 0.01012
       c_rd = -0.0005
     }
-    
-    if(is.null(pft) == TRUE) {
-      # use global mean values if pft is not included in function
+    else{
+      warning("No recognized plant functional type. Value calculated using global mean parameters")
+      
       a_rd = -2.2276
       b_rd = 0.01012
       c_rd = -0.0005
@@ -145,3 +144,5 @@ tempStandardize <- function(estimate,
     
   }
 }
+
+
