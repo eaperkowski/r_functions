@@ -4,19 +4,22 @@
 # degrees C using equations from Smith et al., 2019 and Kattge & Knorr (2007).
 #
 # Arguments:
-#    - Vcmax_est    =  Original Vcmax estimate at tLeaf
-#    - Jmax_est     =  Original Jmax estimate at tLeaf
-#    - tLeaf        =  average leaf temperature during A/ci curve, must be in 
-#                      degrees Celsius.
-#    - tLeafMean    =  growing season leaf temperature mean. A value representing
-#                      the mean of all leaf temperature measurements of an experiment
-#                      Temperature must be in degrees Celsius.
+#    - estimate        =  Vcmax, Jmax, or Rd estimate
+#    - estimate.type   =  Notes whether estimate type is a Vcmax, Jmax, or Rd
+#                         estimate
+#    - standard.to     =  temperature to standardize rate estimate to. In deg C
+#    - tLeaf           =  average leaf temp. during estimate. Must be in degC
+#    - tGrow           =  avg. growing season temp. or avg. temp across entire 
+#                         experiment
+#
 # Returns:
-#    - List of length two with Vcmax or Jmax estimate standardized to 25 degC
-standardizeLimitations <- function(estimate,
-                                   estimate.type = c("Vcmax", "Jmax", "Rd"),
-                                   tLeaf, 
-                                   tGrow) {
+# Vector of each Vcmax, Jmax, or Rd estimate standardized to the designated
+# temperature
+standardizePhotoRates <- function(estimate,
+                                  estimate.type = c("Vcmax", "Jmax", "Rd"),
+                                  standard.to,
+                                  tLeaf,
+                                  tGrow) {
 
   ## delta S constants as per Kattge & Knorr 
   a_vcmax <- 668.39
@@ -30,17 +33,18 @@ standardizeLimitations <- function(estimate,
   ## Calculate delta S for Jmax
   S_jmax <- a_jmax + b_jmax * tGrow
   
-  ## Constants to standardize Vcmax and Jmax estimates to 25 degC
+  ## Constants to standardize Vcmax, Jmax, and Rd estimates to 25 degC
   tK <- tLeaf + 273.15
-  tO <- 298.15
+  tO <- standard.to + 273.15
   Ha_vcmax <- 71513
   Ha_jmax <- 49884
   Hd <- 200000
   R <- 8.314
   
   if (estimate.type == "Vcmax") {
-  multOneVcmax <- exp((Ha_vcmax * (tK - tO)) / (R * tK * tO))
-  multTwoVcmax <- (1 + exp((tO * S_vcmax - Hd)/(R * tO))) / (1 + exp((tK * S_vcmax - Hd)/(R * tK)))
+  multOneVcmax <- exp((Ha_vcmax * (tK - tO)) / 
+                        (R * tK * tO))
+  multTwoVcmax <- (1 + exp((tO *  S_vcmax - Hd)/(R * tO))) / (1 + exp((tK * S_vcmax - Hd)/(R * tK)))
   
   multipliersVcmax <- multOneVcmax * multTwoVcmax
   VcmaxStandard <- estimate / multipliersVcmax
@@ -67,13 +71,15 @@ standardizeLimitations <- function(estimate,
     a_rd = -1.6821
     b_rd = 0.1272
     c_rd = -0.00103
-    
-    t = 25 # temperature to standardize to
 
     ## Equation from Heskel et al. (2016) and O'Sullivan et al. (2013)
-    rd.25 = estimate * exp(b_rd*(t - tLeaf) + c_rd*((t)^2 - (tLeaf)^2))
+    rd.25 = estimate * exp(b_rd * 
+                             (standard.to - tLeaf) + c_rd * (
+                               (standard.to)^2 - (tLeaf)^2))
     
     return(rd.25)
     
   }
 }
+
+
