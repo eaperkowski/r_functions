@@ -22,7 +22,8 @@
 #      and stomatal limitation value (stomLim).
 # 
 # Note: Stomatal limitation should be a value less than or equal to one
-stomatal_limitation <- function(A_net, Vcmax, elevation, temp) {
+stomatal_limitation <- function(A_net, Vcmax, elevation, temp, 
+                                Rd.meas = FALSE, Rd) {
    ### calc_patm function
    calc_patm = function(z) {
       
@@ -89,9 +90,17 @@ stomatal_limitation <- function(A_net, Vcmax, elevation, temp) {
    # Global constants
    K = calc_km_pa(temp = temp, z = elevation)
    gStar_pa = calc_gammastar_pa(temp = temp, z = elevation)
+   
+   if(Rd.meas == FALSE) {
+     Rd <- 0.015 * Vcmax
+   }
+   
+   if(Rd.meas == TRUE) {
+     Rd <- Rd
+   }
 
    # Calculate A_mod
-   A_mod = Vcmax * ((400 - gStar_pa) / (400 + K))
+   A_mod = Vcmax * ((400 - gStar_pa) / (400 + K)) - Rd
    
    # Determine stomatal limitation
    l <- 1 - (A_net / A_mod)
