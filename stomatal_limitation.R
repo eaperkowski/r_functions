@@ -34,7 +34,7 @@ stomatal_limitation <- function(A_net, Vcmax, elevation, temp,
       kR = 8.3143    # universal gas constant, J/mol/K (Allen, 1973)
       kMa = 0.028963 # molecular weight of dry air, kg/mol (Tsilingiris, 2008)
       
-      patm = kPo*(1.0 - kL*z/kTo)**(kG*kMa/(kR*kL))
+      patm = kPo*(1.0 - kL*z/kTo)*(kG*kMa/(kR*kL))
       
       patm
    }
@@ -91,6 +91,7 @@ stomatal_limitation <- function(A_net, Vcmax, elevation, temp,
    K = calc_km_pa(temp = temp, z = elevation)
    gStar_pa = calc_gammastar_pa(temp = temp, z = elevation)
    
+   # Add contingency over whether Rd was measured or not
    if(Rd.meas == FALSE) {
      Rd <- 0.015 * Vcmax
    }
