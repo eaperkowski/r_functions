@@ -22,7 +22,7 @@
 # Note: Stomatal limitation should be a value less than or equal to one
 stomatal_limitation <- function(A_net, Vcmax, elevation, leaf.temp, 
                                 Rd.meas = FALSE, Rd) {
-   library(rpmodel)
+   require(rpmodel)
    
    
    # Global constants
