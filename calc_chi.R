@@ -14,6 +14,8 @@ calc_chi <- function(leaf.d13c, type = c("c3", "c4", NA)) {
   if(is.na(type) == TRUE) {
     type == "c3"
     warning("No photosynthetic pathway input. Defaulting to c3 pathway")
+    
+  }
   
   if(type == "c3") {
     
@@ -37,4 +39,3 @@ calc_chi <- function(leaf.d13c, type = c("c3", "c4", NA)) {
   return(chi)
 
 }
-calc_chi(seq(-28, -26, 0.1), NA)
