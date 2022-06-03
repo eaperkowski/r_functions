@@ -20,15 +20,17 @@
 #    - jmc             = activity of electron transport
 #    - c               = resorption efficiency of N
 #    - tau             = leaf replacement time (years)
+#    - k               = extinction coefficient for Vcmax 
+#    - lai             = leaf area index (or total leaf area)
 #
 # Returns:
 # List with percent nitrogen allocated to Rubisco (n.rubisco), percent
 # nitrogen allocated to bioenergetics, percent nitrogen allocated to structure 
 # (n.struct), and leaf nitrogen demand (n.demand). Note that function will 
 # return NA values for any calculation if vcmax/jmax/lma is missing
-leafDemand <- function(vcmax25 = NA, jmax25 = NA, lma = NA, mn = 14, mr = 0.55,
+nDemand <- function(vcmax25 = NA, jmax25 = NA, lma = NA, lai = NA, mn = 14, mr = 0.55,
                        nr = 0.0114,n = 8, kcat = 3.5, nCyt = 0.124, jmc = 156,
-                       c = 0, tau = 1) {
+                       c = 0, tau = 1, k = 0.175) {
   
   ## Percent of N in Rubisco
   n.rubisco = (vcmax25 * mn * mr * nr) / (n * kcat)
@@ -40,13 +42,17 @@ leafDemand <- function(vcmax25 = NA, jmax25 = NA, lma = NA, mn = 14, mr = 0.55,
   n.struct = 10^-2.67 * (lma ^ 0.99)
   
   ## Leaf nitrogen demand
-  n.demand = ((1 - c) * n.rubisco) / tau
+  leaf.demand = ((1 - c) * n.rubisco) / tau
+  
+  ## Canopy Rubisco (g m^-2)
+  canopy.n.rubisco = ((1 - exp(-k * lai)) * n.rubisco) / k
+  
+  
   
   ## Return data.frame
   return(list(n.rubisco = n.rubisco, 
               n.bioenergetics = n.bioenergetics, 
               n.struct = n.struct, 
-              n.demand = n.demand))
+              leaf.demand = leaf.demand,
+              canopy.n.rubisco = canopy.n.rubisco))
 }
-
-leafDemand(vcmax25 = 100)
