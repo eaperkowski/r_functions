@@ -28,15 +28,21 @@
 # nitrogen allocated to bioenergetics, percent nitrogen allocated to structure 
 # (n.struct), and leaf nitrogen demand (n.demand). Note that function will 
 # return NA values for any calculation if vcmax/jmax/lma is missing
-nDemand <- function(vcmax25 = NA, jmax25 = NA, lma = NA, lai = NA, mn = 14, mr = 0.55,
-                       nr = 0.0114,n = 8, kcat = 3.5, nCyt = 0.124, jmc = 156,
-                       c = 0, tau = 1, k = 0.175) {
+nDemand <- function(vcmax25 = NA, jmax25 = NA, lma = NA, narea = NA, lai = NA, 
+                    mn = 14, mr = 0.55, nr = 0.0114,n = 8, kcat = 3.5, 
+                    nCyt = 0.124, jmc = 156, c = 0, tau = 1, k = 0.175) {
   
-  ## Percent of N in Rubisco
+  ## N in Rubisco
   n.rubisco = (vcmax25 * mn * mr * nr) / (n * kcat)
   
-  ## Percent of N in bioenergetics
+  ## %N in rubisco
+  prop.rubisco = n.rubisco / narea
+  
+  ## N in bioenergetics
   n.bioenergetics = (jmax25 * nCyt) / jmc
+  
+  ## %N in bioenergetics 
+  prop.bioen = n.bioenergetics / narea
   
   ## Leaf nitrogen allocated to structure
   n.struct = 10^-2.67 * (lma ^ 0.99)
