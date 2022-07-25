@@ -1,43 +1,4 @@
-# calc_beta(chi = NA, temp = NA, vpd = NA, ca = 420, z = NA):
-#
-# Calculates beta following Eq. 3 in Lavergne et al. (2020) and originally
-# derived in Prentice et al. (2014). Beta is a parameter in photosynthetic 
-# least-cost theory frameworks that predicts resource use demand. It is
-# a unitless ratio that can also be derived as the ratio of the unit cost of 
-# Rubisco carboxylation maintenance (b) to the unit cost of transpirational 
-# maintenance (a). This function includes functions that can be accessed at the
-# Smith Plantecophys Lab GitHub repository titled "optimal_vcmax_R". Link to the
-# repository is included below.
-#
-# Function inputs:
-#   - chi       = Carbon-13 isotope derived estimate of Ci:Ca. Must be between 
-#                 0 and 1. Code will otherwise not run.
-#   - temp      = acclimated temperature (degrees Celsius)
-#   - vpd       = acclimated vapor pressure deficit (Pa)
-#   - ca        = atmospheric CO2 (ppm)
-#   - z         = elevation (m)
-#
-# Function outputs:
-#   - beta      = resource demand term, calculated per Lavergne et al. (2020)
-#
-# Repository link: https://github.com/SmithEcophysLab/optimal_vcmax_R
-#
-# References:
-# Lavergne A., Sandoval D., Hare V.J., Graven H., Prentice I.C. 2020. Impacts of 
-# soil water stress on the acclimated stomatal limitation of photosynthesis: 
-# insights from stable carbon isotope data. Global Change Biology 26: 7158-7172.
-#
-# Prentice I.C., Dong N., Gleason S.M., Maire V. & Wright I.J. (2014) Balancing 
-# the costs of carbon gain and water transport: testing a new theoretical 
-# framework for plant functional ecology. Ecology Letters 17, 82–91.
-calc_beta <- function(chi = NA, temp = NA, vpd = NA, ca = 420, z = NA) {
-  
-  if (chi >= 1) stop("chi cannot be equal or greater than 1")
-  
-  if(is.na(temp) | is.na(vpd)) stop("missing model inputs required to run code")
-  
-  if(is.na(z)) {warning("missing elevation, code run with z = 0")
-    z = 0}
+calc_optchi <- function(beta = 146, temp = NA, vpd = NA, ca = 420, z = NA) {
 
   # Calculate atmospheric pressure (Pa) from elevation (m)
   calc_patm = function(z) {
@@ -159,7 +120,7 @@ calc_beta <- function(chi = NA, temp = NA, vpd = NA, ca = 420, z = NA) {
     nstar
     
   }
-
+  
   # Calculate gammastar (Pa)
   calc_gammastar_pa = function(temp, z) {
     
@@ -181,7 +142,7 @@ calc_beta <- function(chi = NA, temp = NA, vpd = NA, ca = 420, z = NA) {
     gStar_pa
     
   }
-
+  
   # Calculate the Michaelis-Menton coefficient (Pa) for Rubisco from temperature
   calc_km_pa = function(temp, z) {
     
@@ -208,12 +169,20 @@ calc_beta <- function(chi = NA, temp = NA, vpd = NA, ca = 420, z = NA) {
     
   }
   
-  # Determine nstar, gammaStar, and Km given fxns above
+  ## Determine gammastar, K and nstar
   nstar = calc_nstar(temp, z)
   gammaStar = calc_gammastar_pa(temp, z)
   K = calc_km_pa(temp, z)
   
-  beta = 1.6 * nstar * vpd * ((chi - (gammaStar / ca))^2 / ((1 - chi)^2 * (K + gammaStar)))
   
-  return(beta)
+  # Determine Xi and then calculate chi given xi
+  xi = sqrt((beta * (K + gammaStar)) / (1.6 * nstar))
+  opt.chi = (gammaStar / ca) + (1 - (gammaStar / ca)) * (xi / (xi + sqrt(vpd)))
+  
+  return(opt.chi)
+  
 }
+
+calc_optchi(beta = full.df$beta, temp = full.df$tavg7, vpd = full.df$vpd7 * 10,
+            z = full.df$elevation.m)
+
