@@ -182,7 +182,3 @@ calc_optchi <- function(beta = 146, temp = NA, vpd = NA, ca = 420, z = NA) {
   return(opt.chi)
   
 }
-
-calc_optchi(beta = full.df$beta, temp = full.df$tavg7, vpd = full.df$vpd7 * 10,
-            z = full.df$elevation.m)
-
