@@ -27,6 +27,33 @@ p_rubisco <- function(vcmax25, narea){
 }
 
 ###############################################################################
+# n_rubisco(vcmax25):
+###############################################################################
+#
+# Calculates leaf nitrogen allocated to Rubisco following equations from
+# Niinemets et al. (1997)
+#
+# Function arguments:
+#   - vcmax25     = maximum Rubisco carboxylation rate, standardized to 25degC
+#                  (μmol m^-2 s^-1)
+#
+# Returns:
+# Vector with leaf N allocation to Rubisco (n_rubisco; gN Rubisco m^-2)
+n_rubisco <- function(vcmax25){
+
+  # Constants
+  Mr = 550000 # g Rubisco per mol Rubisco
+  Nr = 0.0114 # mol N per g Rubisco
+  Mn = 14 # gN per mol N
+  nr =  8 # mol Rubisco site per mol Rubisco
+  kcat = 3500000 # µmol CO2 per mol Rubisco site per second
+  
+  # Calc N allocated to rubisco
+  n_rubisco = vcmax25 * Mr * Nr * Mn * (1 / nr) * (1 / kcat)
+  n_rubisco
+}
+
+###############################################################################
 # p_bioenergetics(jmax25, narea):
 ###############################################################################
 #
@@ -44,15 +71,43 @@ p_rubisco <- function(vcmax25, narea){
 # g N bioenergetics g N^-1)
 p_bioenergetics <- function(jmax25, narea){
   
+  # Constants
   jmc = 156 # capacity of electron transport per unit of cytochrome f (umol electrons (umol cyt f)-1 s-1)
   # jmax25 in umol m-2 s-1
   # marea is g m-2
   # nmass is gN g-1
   # 8.06 converts nitrogen to protein (cytf)
   
+  # Calc proportion of N in bioenergetics
   p_bioenergetics = jmax25 / (jmc * narea * 8.06)
   
   p_bioenergetics # g N bioenergetics / g N
+  
+}
+
+###############################################################################
+# n_bioenergetics(jmax25, narea):
+###############################################################################
+#
+# Calculates leaf nitrogen allocated to bioenergetics. Function
+# follows equations from Niinemets et al. (1997)
+#
+# Function arguments:
+#   - jmax25     = maximum RuBP regeneration rate, standardized to 25degC
+#                  (μmol m^-2 s^-1)
+#
+# Returns:
+# Vector with leaf N allocated to bioenergetics (n_bioenergetics; gN 
+# bioenergetics m^-2)
+
+n_bioenergetics = function(jmax25) {
+  # Constants
+  Ncyt = 0.124 # N investment in bioenergetics; gN (µmol cyt f)-1
+  jmc = 156 # capacity of electron transport per unit of cytochrome f (umol electrons (umol cyt f)-1 s-1)
+  
+  # Calc N invested to bioenergetics
+  n_bioenergetics = (jmax25 * Ncyt) / jmc
+  n_bioenergetics
   
 }
 
@@ -119,9 +174,9 @@ p_lightharvesting <- function(chlorophyll, nmass){
 # Vector with proportion of leaf N to light harvesting (p_lightharvesting; 
 # g N light harvesting g N^-1)
 ### lma conversion from Dong et al. (2017) Biogeosciences
-p_structure = function(lma, narea){
+n_structure = function(lma){
   
-  nstructure = ((10^-2.67) * (lma ^ 0.99)) / narea
+  nstructure = (10^-2.67) * (lma ^ 0.99)
   nstructure
   
 }
