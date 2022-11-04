@@ -128,9 +128,8 @@ n_bioenergetics = function(jmax25) {
 # g N light harvesting g N^-1)
 p_lightharvesting <- function(chlorophyll, nmass){
   
-  # chlorophyll content in mmol g-1
+  # chlorophyll content in mmol g-1≠
   # nmass in gN g-1
-  # marea in g m-2
   chlorophyll_mol = chlorophyll / 1000
   cb = 2.75 / 1000 # chlorophyll binding in mol chlorophyll (g N chlorophyll)-1 assuming most is in LHCII
   
@@ -159,27 +158,66 @@ p_lightharvesting <- function(chlorophyll, nmass){
 }
 
 ###############################################################################
-# p_lightharvesting(chlorophyll, nmass):
+# n_structure(lma):
 ###############################################################################
 #
-# Calculates proportion of leaf nitrogen allocated to structure. Function uses
-# LMA as an input per eqs. listed in Dong et al. (2017) Biogeosciences
+# Calculates leaf nitrogen content allocated to structure. Function uses
+# LMA as an input per empirical slope of the relationship between LMA and
+# the amount of nitrogen allocated to cell wall tissue. Eq. listed in legend
+# of Fig. 4b
 #
 # Function arguments:
-#   - chlorophyll = chlorophyll content (mmol g^-1)
-#   - nmass       = leaf nitrogen per leaf mass (g N g^-1)
-#
+#   - lma           = leaf mass per area (g m^-2)
 #
 # Returns:
-# Vector with proportion of leaf N to light harvesting (p_lightharvesting; 
-# g N light harvesting g N^-1)
-### lma conversion from Dong et al. (2017) Biogeosciences
+# Vector with leaf N content allocated to cell wall tissue
+# (n_structure; gN m^-2)
 n_structure = function(lma){
   
-  nstructure = (10^-2.67) * (lma ^ 0.99)
-  nstructure
+  n_structure = 0.000355 * (lma ^ 1.39)
+  n_structure
   
 }
+
+###############################################################################
+# p_structure(lma, narea):
+###############################################################################
+#
+# Calculates leaf nitrogen content allocated to structure. Function uses
+# LMA as an input per empirical slope of the relationship between LMA and
+# the amount of nitrogen allocated to cell wall tissue. Eq. listed in legend
+# of Fig. 4b, then divides by leaf nitrogen content per leaf area to estimate
+# proportion of leaf N allocated to cell wall tissue
+#
+# Alternatively, function can calculate relative proportion of leaf N allocated
+# to cell wall tissue following a second empirical equation that explains the
+# relationship between LMA and the relative proportion of leaf N allocated to
+# cell wall tissue (Ncw / Narea). This equation is listed in the legend of Fig.
+# 4c. Use caution with this function, as the variance explained through this
+# regression is less than the LMA-Ncw relationships (R^2 = 0.35 for 
+# LMA-Ncw/Narea compared to 0.55 for LMA-Ncw)
+#
+# Function arguments:
+#   - lma           = leaf mass per area (g m^-2)
+#   - narea         = leaf nitrogen content per unit leaf area (gN m^-2)
+#
+# Returns:
+# Vector with proportion of leaf N content allocated to cell wall tissue
+# (p_structure; gN gN^-1)
+p_structure = function(lma, narea, useEq = FALSE){
+  
+  p_structure = ifelse(useEq == FALSE,
+                       0.000355 * (lma ^ 1.39) / narea,
+                       28.7*log(lma) - 41.5)
+  
+p_structure
+  
+}
+
+
+
+
+
 ###############################################################################
 # References
 ###############################################################################
