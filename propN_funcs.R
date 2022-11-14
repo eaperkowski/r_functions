@@ -204,11 +204,9 @@ n_structure = function(lma){
 # Returns:
 # Vector with proportion of leaf N content allocated to cell wall tissue
 # (p_structure; gN gN^-1)
-p_structure = function(lma, narea, useEq = FALSE){
+p_structure = function(lma, narea){
   
-  p_structure = ifelse(useEq == FALSE,
-                       0.000355 * (lma ^ 1.39) / narea,
-                       28.7*log(lma) - 41.5)
+  p_structure = 0.000355 * (lma ^ 1.39) / narea
   
 p_structure
   
