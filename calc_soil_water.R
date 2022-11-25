@@ -8,20 +8,21 @@
 # NOTE: all variables here are included in SoilGrids data product
 #
 # Inputs:
-#   - fsand       = Sand content (% by weight)
-#   - fclay       = Clay content (% by weight)
-#   - fom         = Organic matter content (% by weight)
-#   - fgravel     = Gravel content (% by weight, particles > 2mm diameter)
+#   - fsand       = Sand content (%, must be in decimal form)
+#   - fclay       = Clay content (%, must be in decimal form)
+#   - fom         = Organic matter content (%, must be in decimal form). 
+#                   Can estimate from soil organic carbon 
+#   - fgravel     = Gravel content (%, must be in decimal form)
 #   - zbed        = bedrock depth (m)
 #   - zmax        = maximum allowable bedrock depth. Set to 2 m 
 #                   (Stocker et al. (2020)
 #
 # Outputs
-#   - wfc         = Water storage at field capacity
-#   - pwp         = Permanent wilting point
-#   - whc         = Water holding capacity
+#   - wfc         = Water storage at field capacity (m3 m^-3)
+#   - pwp         = Permanent wilting point (m3 m^-3)
+#   - whc         = Water holding capacity (m)
 
-calc_soil_water <- function(fsand = NA, fclay = NA, fom = NA,
+calc_soil_water <- function(id, fsand = NA, fclay = NA, fom = NA,
                             fgravel = NA, zbed = NA, zmax = 2) {
   
   ## Calculate kfc (input for field capacity)
@@ -39,8 +40,18 @@ calc_soil_water <- function(fsand = NA, fclay = NA, fom = NA,
   pwp = kpwp + (0.14 * kpwp - 0.02)
   
   # Calculate water holding capacity
-  whc = (wfc - wpwp)*(1 - fgravel)*min(zbed, zmax)
+  whc = (wfc - pwp)*(1 - fgravel)*min(zbed, zmax)
   
-  return(data.frame(wfc, pwp, whc))
+  return(data.frame(id, wfc, pwp, whc))
   
 }
+
+## Tests
+# df <- read.csv("/Users/eaperkowski/git/TX_ecolab_leafNitrogen/data_sheets/TXeco_soilgrid_data.csv")
+# 
+# calc_soil_water(id = df$id,
+#                 fsand = df$perc.sand/100,
+#                 fclay = df$perc.clay/100,
+#                 fom = df$om/1000,
+#                 fgravel = df$perc.gravel/100,
+#                 zbed = df$bedrock/100)
