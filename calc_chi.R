@@ -1,7 +1,11 @@
-calc_chi_c3 <- function(leaf.d13c) {
+calc_chi_c3 <- function(leaf.d13c, year = NA) {
+  
+  ## Derive d13C in air as a function of calendar year, as done in Feng et al. (1999)
+  if(is.na(year)) {air =-8}
+  
+  if(!is.na(year)) {air = -6.429 - 0.006*exp(0.0217*(year-1740))}
   
   # Global constants
-  air = -8
   a = 4.4
   b = 27
   
@@ -9,18 +13,22 @@ calc_chi_c3 <- function(leaf.d13c) {
   delta <- (air - leaf.d13c) / (1 + leaf.d13c * 0.001)
   chi <- (delta - a) / (b - a)
   
-  return(chi)
+  return(c(air.d13c = air, chi = chi))
   
 }
 
-
-calc_chi_c4 <- function(leaf.d13c) {
+calc_chi_c4 <- function(leaf.d13c, year = NA) {
+  
+  ## Derive d13C in air as a function of calendar year, as done in Feng et al. (1999)
+  if(is.na(year)) {air =-8}
+  
+  if(!is.na(year)) {air = -6.429 - 0.006*exp(0.0217*(year-1740))}
+  
   # Global constants
-  air = -8
   a = 4.4
   c = -5.7
   d = 30
-  phi = 0.37
+  phi = 0.40
   
   b.c4 = -5.7 + (d * phi)
   
@@ -28,7 +36,17 @@ calc_chi_c4 <- function(leaf.d13c) {
   delta <- (air - leaf.d13c) / (1 + leaf.d13c * 0.001)
   chi <- (delta - a) / (b.c4 - a)
   
-  return(chi)
+  return(c(air.d13c = air, chi = chi))
   
 }
+
+
+
+# Test fxn when year is not included (air.d13C should = -8)
+# calc_chi_c3(leaf.d13c = -30)
+# calc_chi_c4(leaf.d13c = -13)
+# 
+# # Test fxn when year is included (air.d13C should be different than -8)
+# calc_chi_c3(leaf.d13c = -30, year = 2020)
+# calc_chi_c4(leaf.d13c = -13, year = 2020)
 
