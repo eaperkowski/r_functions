@@ -1,9 +1,10 @@
-calc_chi_c3 <- function(leaf.d13c, year = NA) {
+calc_chi_c3 <- function(leaf.d13c, air = NA, year = NA) {
   
-  ## Derive d13C in air as a function of calendar year, as done in Feng et al. (1999)
-  if(is.na(year)) {air =-8}
-  
-  if(!is.na(year)) {air = -6.429 - 0.006*exp(0.0217*(year-1740))}
+  ## Derive d13C in air as a function of calendar year, 
+  ## as done in Feng et al. (1999), with option to directly modify
+  ## air fractionation value
+  if(is.na(year) & is.na(air)) {air =-8}
+  if(is.na(year) & !is.na(air)) {air = air}
   
   # Global constants
   a = 4.4
@@ -17,12 +18,14 @@ calc_chi_c3 <- function(leaf.d13c, year = NA) {
   
 }
 
-calc_chi_c4 <- function(leaf.d13c, year = NA) {
-  
-  ## Derive d13C in air as a function of calendar year, as done in Feng et al. (1999)
-  if(is.na(year)) {air =-8}
-  
-  if(!is.na(year)) {air = -6.429 - 0.006*exp(0.0217*(year-1740))}
+calc_chi_c4 <- function(leaf.d13c, air = NA, year = NA) {
+
+  ## Derive d13C in air as a function of calendar year, 
+  ## as done in Feng et al. (1999), with option to directly modify
+  ## air fractionation value
+  if(is.na(year) & is.na(air)) {air =-8}
+  if(is.na(year) & !is.na(air)) {air = air}
+  if(!is.na(year) & is.na(air)) {air = -6.429 - 0.006*exp(0.0217*(year-1740))}
   
   # Global constants
   a = 4.4
