@@ -30,7 +30,7 @@
 # Prentice I.C., Dong N., Gleason S.M., Maire V. & Wright I.J. (2014) Balancing 
 # the costs of carbon gain and water transport: testing a new theoretical 
 # framework for plant functional ecology. Ecology Letters 17, 82–91.
-calc_beta <- function(chi = NA, temp = NA, vpd = NA, ca = 420, z = NA) {
+calc_beta <- function(chi = NA, temp = NA, vpd = NA, ca = 420, z = 0) {
 
   # Calculate atmospheric pressure (Pa) from elevation (m)
   calc_patm = function(z) {
@@ -202,9 +202,6 @@ calc_beta <- function(chi = NA, temp = NA, vpd = NA, ca = 420, z = NA) {
   }
   
   # Determine nstar, gammaStar, and Km given fxns above
-  if(is.na(z)) {warning("missing elevation, code run with z = 0")
-    z = 0}
-  
   nstar = calc_nstar(temp, z)
   gammaStar = calc_gammastar_pa(temp, z)
   K = calc_km_pa(temp, z)

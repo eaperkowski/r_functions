@@ -5,6 +5,7 @@ calc_chi_c3 <- function(leaf.d13c = NA, air = NA, year = NA) {
   ## air fractionation value
   if(is.na(year) & is.na(air)) {air =-8}
   if(is.na(year) & !is.na(air)) {air = air}
+  if(!is.na(year) & is.na(air)) {air = -6.429 - 0.006*exp(0.0217*(year-1740))}
   
   # Global constants
   a = 4.4
@@ -14,7 +15,7 @@ calc_chi_c3 <- function(leaf.d13c = NA, air = NA, year = NA) {
   delta <- (air - leaf.d13c) / (1 + leaf.d13c * 0.001)
   chi <- (delta - a) / (b - a)
   
-  return(data.frame(air.d13c = air, chi = chi))
+  return(chi)
   
 }
 
@@ -39,17 +40,17 @@ calc_chi_c4 <- function(leaf.d13c = NA, air = NA, year = NA) {
   delta <- (air - leaf.d13c) / (1 + leaf.d13c * 0.001)
   chi <- (delta - a) / (b.c4 - a)
   
-  return(data.frame(air.d13c = air, chi = chi))
+  return(chi)
   
 }
 
 
 
 # Test fxn when year is not included (air.d13C should = -8)
-# calc_chi_c3(leaf.d13c = 30)
-# calc_chi_c4(leaf.d13c = -13)
+#calc_chi_c3(leaf.d13c = -30)
+#calc_chi_c4(leaf.d13c = -13)
 # 
 # # Test fxn when year is included (air.d13C should be different than -8)
-# calc_chi_c3(leaf.d13c = -30, year = 2020)
-# calc_chi_c4(leaf.d13c = -13, year = 2020)
+#calc_chi_c3(leaf.d13c = -31, year = 2020)
+#calc_chi_c4(leaf.d13c = -13, year = 2020)
 
