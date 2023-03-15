@@ -201,12 +201,22 @@ calc_beta <- function(chi = NA, temp = NA, vpd = NA, ca = 420, z = 0) {
     
   }
   
-  # Determine nstar, gammaStar, and Km given fxns above
+  # Determine CO2 concentration, nstar, gammaStar, and Km given fxns above
+  patm = calc_patm(z)
+  
+  Ca = ca * 1e-6 * patm
+  
   nstar = calc_nstar(temp, z)
   gammaStar = calc_gammastar_pa(temp, z)
   K = calc_km_pa(temp, z)
   
-  beta = 1.6 * nstar * vpd * ((chi - (gammaStar / ca))^2 / ((1 - chi)^2 * (K + gammaStar)))
+  beta = 1.6 * nstar * vpd * ((chi - (gammaStar / Ca))^2 / ((1 - chi)^2 * (K + gammaStar)))
   
-  return(beta)
+  return(list(Ca = Ca, eta_star = nstar, gamma_star = gammaStar, K = K, beta = beta))
 }
+
+
+# Tests
+#calc_beta(chi = c(0.6, 0.7, 0.8), temp = 27, vpd = 1000, z = 1000)
+
+

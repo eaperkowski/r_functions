@@ -40,7 +40,7 @@ calc_chi_c4 <- function(leaf.d13c = NA, air = NA, year = NA) {
   delta <- (air - leaf.d13c) / (1 + leaf.d13c * 0.001)
   chi <- (delta - a) / (b.c4 - a)
   
-  return(chi)
+  return(list(delta = delta, chi = chi))
   
 }
 
@@ -48,9 +48,9 @@ calc_chi_c4 <- function(leaf.d13c = NA, air = NA, year = NA) {
 
 # Test fxn when year is not included (air.d13C should = -8)
 #calc_chi_c3(leaf.d13c = -30)
-#calc_chi_c4(leaf.d13c = -13)
+calc_chi_c4(leaf.d13c = -13)
 # 
 # # Test fxn when year is included (air.d13C should be different than -8)
 #calc_chi_c3(leaf.d13c = -31, year = 2020)
-#calc_chi_c4(leaf.d13c = -13, year = 2020)
+calc_chi_c4(leaf.d13c = -13, year = 2020)
 
