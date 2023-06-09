@@ -15,7 +15,7 @@ calc_chi_c3 <- function(leaf.d13c = NA, air = NA, year = NA) {
   delta <- (air - leaf.d13c) / (1 + leaf.d13c * 0.001)
   chi <- (delta - a) / (b - a)
   
-  return(chi)
+  return(data.frame(delta = delta, chi = chi))
   
 }
 
@@ -40,7 +40,7 @@ calc_chi_c4 <- function(leaf.d13c = NA, air = NA, year = NA) {
   delta <- (air - leaf.d13c) / (1 + leaf.d13c * 0.001)
   chi <- (delta - a) / (b.c4 - a)
   
-  return(chi)
+  return(data.frame(delta = delta, chi = chi))
   
 }
 
