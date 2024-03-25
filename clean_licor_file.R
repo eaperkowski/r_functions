@@ -3,7 +3,7 @@
 ###############################################################################
 #
 # Description: helper function that reads an uncleaned LI-6800 source file 
-# (compatitble with both a UTF-8 or .xlsx source file) and converts it into
+# (compatible with both a UTF-8 or .xlsx source file) and converts it into
 # a clean and tidy file. The helper function will be implemented in a second
 # function (`clean_licor_files`) to automate cleaning all LI-6800 source files
 # in a working directory.
@@ -15,17 +15,10 @@
 #                         returned as an object (write_to_csv = FALSE)
 # - write_to            = path to write cleaned .txt LI-6800 file. Only used if 
 #                         write_to_csv = TRUE
-# - common_params_only  = Boolean operator that dictates whether the function
-#                         filters cleaned source file to only include commonly
-#                         used plant ecophys traits. Note: does not include
-#                         fluorescence measurements but function can be easily
-#                         adapted for this
-#
 # Returns:
 # - a .csv file written to a path of user's choosing (if write_to_csv = TRUE)
 # - a data frame (if write_to_csv = FALSE)
 clean_licor_file <- function(path = "",
-                             common_params_only = FALSE,
                              write_to_csv = TRUE,
                              write_to = "") {
   
@@ -58,14 +51,6 @@ clean_licor_file <- function(path = "",
   names(data_noheader) <- data_noheader[3, ]
   data_clean <- data_noheader[-c(1:4), ]
   
-  # Subset dataset to only include columns relevant for A/Ci curves
-  if(common_params_only) {
-    data_clean <- dplyr::select(data_clean, obs, date, machine, id,
-                                A, Ca, Ci, gsw, Tleaf, Qin)
-  } else if(!common_params_only) {
-    data_clean
-  }
-  
 
   # Conditional return (if write_to_csv = TRUE, then .csv file is written.
   # if write_to_csv = FALSE, then cleaned file is returned as an object)
@@ -85,7 +70,6 @@ clean_licor_file <- function(path = "",
 #############
 ## TESTING ##
 #############
-#clean_licor_file(path = "../2022_NxCO2xI/licor_raw/week7/aco2_co2Resp_W7D2_alb",
-#                 common_params_only = TRUE,
-#                 write_to_csv = FALSE,
-#                 write_to = "")
+# clean_licor_file(path = "../2022_NxCO2xI/licor_raw/week7/aco2_co2Resp_W7D2_alb",
+#                  write_to_csv = FALSE,
+#                  write_to = "")
