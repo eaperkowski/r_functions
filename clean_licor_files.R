@@ -1,61 +1,65 @@
 # clean_licor_files(directory_path, file_type, write_to_csv, write_to):
 #
-# Description: helper function that reads a tab-delimited UTF-8 or .xlsx
-# Microsoft Excel file and converts it into a tidy, cleaned file. 
-# 
-# The function returns the tidy file using one of two output options: 
-#   - (1) a .csv file that gets written to the path of the user's choosing
-#   - (2) as a data frame
+# Description: helper function that reads all tab-delimited UTF-8 or .xlsx
+# files in a folder directory and converts all files into a tidy, cleaned file.
+# The function gives the option to write all cleaned files into a separate
+# folder, or return a list of data frames with each data frame containing data
+# for a single LI-6800 file.
 #
 # Function inputs:
 #
-# - directory_path    = folder containing suite of uncleaned source LI-6800 files
-# - file_type         = string that designates whether source LI-6800 files are
-#                       a tab-delimited UTF-8 file or a Microsoft Excel (.xlsx) file
-# - write_to_csv      = Boolean operator. If write_to_csv = TRUE, the function will
-#                       writes all newly cleaned source lI-6800 files as a .csv into 
-#                       the folder designated in the write_directory argument. If
-#                       write_to_csv = FALSE, the function will compile all cleaned
-#                       source LI-6800 files into a list of data.frames
+# - directory_path    = folder containing a selection of uncleaned source 
+#                       LI-6800 files
 # - write_directory   = new folder where cleaned LI-6800 files are stored. Files are
 #                       automatically saved as a .csv file with no option for 
 #                       writing files as a different extension. This function can
 #                       easily be manually altered, however, to write files to a 
 #                       different extension
+# - return_list       = specifies whether function returns cleaned data files 
+#                       as a list of data frames (return_list = TRUE), or writes
+#                       
 #
 # Returns:
 # - writes a .csv file for each source LI-6800 file into the folder designated as
 #   the write_directory
 # - source LI-6800 files are compiled into a single list of data frames
-clean_licor_files <- function(directory_path = "",
-                              write_directory = "",
-                              skip_rows = 63,
+clean_licor_files <- function(directory_path,
+                              write_directory,
                               return_list = FALSE) {
   
   ## Assign directory path
   file_list <- list.files(directory_path, full.names = TRUE)
 
+  ## Apply `clean_licor_file` across all files in directory_path 
+  cleaned_files_list <-  lapply(file_list, 
+                                function(x) 
+                                  clean_licor_file(path = x, 
+                                                   write_to_csv = FALSE))
   
-  for (file in file_list) {
+  ## Change list elements to the basename of the file_list
+  names(cleaned_files_list) <- basename(file_list)
+  
+  if(return_list) {
     
-    licor_cleaned <- clean_licor_file(file, 
-                                      skip_rows = skip_rows, 
-                                      write_to_csv = FALSE)
-    
-    if(return_list) {
-      
-      licor_cleaned_list[[basename(file)]] <- list(data = licor_cleaned, 
-                                                   file_name = basename(file))
-      } else {
-      
-        file_to_write <- file.path(write_directory, basename(file))
-      
-        write.csv(licor_cleaned, file = paste0(file_to_write, ".csv"))
+    return(cleaned_files_list)
+  } else if(!return_list) {
+
+    for(i in seq_along(cleaned_files_list)) {
+      write.csv(cleaned_files_list[[i]],
+                file = paste0(file.path(write_directory, 
+                                        names(cleaned_files_list[i])),
+                              "_cleaned.csv"), row.names = FALSE)
     }
     
-    if(return_list) {
-      return(licor_cleaned_list)
-      }
-
   }
-}
+}  
+
+
+
+clean_licor_files(directory_path = "../2022_NxCO2xI/licor_raw/week7",
+                          return_list = FALSE,
+                          write_directory = "/Users/eaperkowski/Desktop/test_licor_script")
+
+
+
+

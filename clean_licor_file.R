@@ -57,7 +57,7 @@ clean_licor_file <- function(path = "",
   if(write_to_csv == TRUE) { 
     
     # Create file_name path
-    file_name <- paste0(basename(path), ".csv")
+    file_name <- paste0(basename(path), "_cleaned.csv")
     
     write.csv(data_clean,
               file = file.path(write_to, file_name),
