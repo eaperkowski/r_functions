@@ -210,13 +210,13 @@ calc_beta <- function(chi = NA, temp = NA, vpd = NA, ca = 420, z = 0) {
   gammaStar = calc_gammastar_pa(temp, z)
   K = calc_km_pa(temp, z)
   
-  beta = 1.6 * nstar * vpd * ((chi - (gammaStar / Ca))^2 / ((1 - chi)^2 * (K + gammaStar)))
+  beta = 1.6 * nstar * vpd * ((chi - (gammaStar / ca))^2 / ((1 - chi)^2 * (K + gammaStar)))
   
-  return(list(Ca = Ca, eta_star = nstar, gamma_star = gammaStar, K = K, beta = beta))
+  return(list(eta_star = nstar, gamma_star = gammaStar, K = K, beta = beta))
 }
 
 
 # Tests
-#calc_beta(chi = c(0.6, 0.7, 0.8), temp = 27, vpd = 1000, z = 1000)
+calc_beta(chi = c(0.9), temp = 27, vpd = 1000, z = 1000)
 
 

@@ -11,18 +11,11 @@
 #
 # Returns:
 #     - Vector containing %Ndfa. Vector is already in percent form
-calc_ndfa <- function(ref.15n = NA, sample.15n = NA, B = NA, use_atm_val = TRUE) {
+calc_ndfa <- function(ref.15n = NA, sample.15n = NA, B = NA) {
+
+  ndfa <- (ref.15n - sample.15n) / (ref.15n - B) * 100
   
-  if(use_atm_val == TRUE) {
-    
-    d15n_atm <- 0.3663 # % of 15N in atmosphere (Dawson et al., 2002)
-    
-    ndfa <- (ref.15n - sample.15n) / (ref.15n - d15n_atm) * 100
-  }
-  
-  else(ndfa <- (ref.15n - sample.15n) / (ref.15n - B) * 100)
-  
-  return(data.frame(ndfa))
+  return(ndfa)
 }
 
 # Test
