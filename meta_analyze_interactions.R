@@ -24,7 +24,6 @@
 #
 # A list containing the 
 
-
 meta_analyze_interactions <- function(x_a, s_a, n_a,
                                       x_b, s_b, n_b,
                                       x_c, s_c, n_c,
@@ -54,6 +53,9 @@ meta_analyze_interactions <- function(x_a, s_a, n_a,
                  1/n_b + 
                  1/n_ab + 
                  (dI^2 / (2 * (n_c + n_a + n_b + n_ab))))
+  
+  d_plusPlus = 
+
   
   return(dI, v2, s, m, j_m, d_plusPlus)
   
